@@ -53,7 +53,7 @@ class SettingsProfile extends StatelessWidget {
                   color: Colors.green[200],
                 ),
                 child: Text(
-                  'User Management',
+                  'Business Management',
                   style: TextStyle(color: Colors.green[900], fontSize: 12),
                 ),
               ),

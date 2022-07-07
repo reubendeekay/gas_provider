@@ -155,6 +155,16 @@ class AuthProvider with ChangeNotifier {
           .set(product.toJson());
     }
 
+    await FirebaseFirestore.instance
+        .collection('providers')
+        .doc(uid)
+        .collection('account')
+        .doc('finances')
+        .set({
+      'balance': 0,
+      'totalRevenue': 0,
+    });
+
     notifyListeners();
   }
 }

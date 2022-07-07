@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+      name: "gas-app-26a73", options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }

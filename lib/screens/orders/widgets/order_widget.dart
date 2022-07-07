@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:gas_provider/constants.dart';
-import 'package:gas_provider/helpers/cached_image.dart';
 import 'package:gas_provider/models/request_model.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gas_provider/screens/orders/order_details_screen.dart';
+import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
 class OrderWidget extends StatelessWidget {
@@ -16,7 +16,9 @@ class OrderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(() => OrderDetailsScreen(request: request));
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
         padding: const EdgeInsets.all(15),

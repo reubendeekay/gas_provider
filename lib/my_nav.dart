@@ -1,7 +1,11 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/models/request_model.dart';
 import 'package:gas_provider/screens/home/home_page.dart';
+import 'package:gas_provider/screens/home/widgets/customer_request_dialog.dart';
 import 'package:gas_provider/screens/orders/orders_screen.dart';
 import 'package:gas_provider/screens/products/products_screen.dart';
 import 'package:gas_provider/screens/settings/settings_screen.dart';
@@ -32,21 +36,39 @@ class _MyNavState extends State<MyNav> {
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
-      body: SizedBox.expand(
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-          children: const [
-            Homepage(),
-            ProductsScreen(),
-            OrdersScreen(),
-            SettingsScreen(),
-          ],
-        ),
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('requests')
+              .doc('providers')
+              .collection(uid)
+              .where('status', isEqualTo: 'pending')
+              .snapshots(),
+          builder: (context, snapshot) {
+            return SizedBox.expand(
+              child: Stack(
+                children: [
+                  PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() => _currentIndex = index);
+                    },
+                    children: const [
+                      Homepage(),
+                      ProductsScreen(),
+                      OrdersScreen(),
+                      SettingsScreen(),
+                    ],
+                  ),
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty)
+                    CustomerRequestDialog(
+                        request:
+                            RequestModel.fromJson(snapshot.data!.docs.first)),
+                ],
+              ),
+            );
+          }),
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: _currentIndex,
         onItemSelected: (index) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gas_provider/screens/notifications/widgets/notifications_screen.dart';
+import 'package:get/route_manager.dart';
 import 'package:iconsax/iconsax.dart';
 
 class MainSettings extends StatelessWidget {
@@ -19,6 +21,9 @@ class MainSettings extends StatelessWidget {
             icon: Iconsax.notification,
             title: 'Notifications',
             subtitle: 'View all notifications',
+            onTap: () {
+              Get.to(() => NotificationsScreen());
+            },
           ),
           settingTile(
             icon: Iconsax.info_circle,
@@ -34,28 +39,33 @@ class MainSettings extends StatelessWidget {
     IconData? icon,
     Function? onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          Icon(icon ?? Iconsax.user),
-          const SizedBox(
-            width: 15,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title ?? 'Account Settings',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              Text(
-                subtitle ?? 'Manage your account',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          )
-        ],
+    return GestureDetector(
+      onTap: () {
+        if (onTap != null) onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Icon(icon ?? Iconsax.user),
+            const SizedBox(
+              width: 15,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title ?? 'Account Settings',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  subtitle ?? 'Manage your account',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
