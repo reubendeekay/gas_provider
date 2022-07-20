@@ -2,17 +2,18 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/helpers/button_loader.dart';
 import 'package:gas_provider/models/product_model.dart';
 import 'package:gas_provider/models/provider_model.dart';
 import 'package:gas_provider/models/user_model.dart';
 import 'package:gas_provider/providers/auth_provider.dart';
-import 'package:gas_provider/providers/gas_providers.dart';
+import 'package:gas_provider/providers/location_provider.dart';
 import 'package:gas_provider/widgets/add_on_map.dart';
 import 'package:gas_provider/widgets/add_product.dart';
+import 'package:gas_provider/widgets/loading_screen.dart';
 import 'package:gas_provider/widgets/my_text_field.dart';
 import 'package:gas_provider/widgets/option_list_tile.dart';
 import 'package:get/route_manager.dart';
@@ -28,6 +29,16 @@ class RegisterProvider extends StatefulWidget {
 }
 
 class _RegisterProviderState extends State<RegisterProvider> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<LocationProvider>(context, listen: false)
+          .getCurrentLocation();
+    });
+  }
+
+  bool isLoading = false;
   List<ProductModel> _products = [];
   LatLng? _location;
   List<File> images = [];
@@ -304,7 +315,7 @@ class _RegisterProviderState extends State<RegisterProvider> {
                       }
                     : () async {
                         final provider = ProviderModel(
-                          name: name,
+                          name: businessName,
                           address: address,
                           location: GeoPoint(
                             _location!.latitude,
@@ -313,7 +324,6 @@ class _RegisterProviderState extends State<RegisterProvider> {
                           products: _products,
                           ratingCount: 0,
                           ratings: 0,
-                          ownerId: FirebaseAuth.instance.currentUser!.uid,
                         );
 
                         final user = UserModel(
@@ -325,6 +335,11 @@ class _RegisterProviderState extends State<RegisterProvider> {
                           locations: [],
                           isDriver: false,
                         );
+
+                        setState(() {
+                          isLoading = true;
+                        });
+
                         try {
                           await Provider.of<AuthProvider>(context,
                                   listen: false)
@@ -335,7 +350,14 @@ class _RegisterProviderState extends State<RegisterProvider> {
                               content: Text('Registering.Please wait...'),
                             ),
                           );
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Get.offAll(const InitialLoadingScreen());
                         } catch (e) {
+                          setState(() {
+                            isLoading = false;
+                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.toString()),
@@ -345,7 +367,7 @@ class _RegisterProviderState extends State<RegisterProvider> {
                       },
                 color: kIconColor,
                 textColor: Colors.white,
-                child: const Text('Register'),
+                child: isLoading ? const MyLoader() : const Text('Register'),
               ),
             ),
             const SizedBox(

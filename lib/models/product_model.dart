@@ -2,10 +2,10 @@ class ProductModel {
   String? id;
   final String? name;
   final String? category;
-  final String? ownerId;
+  String? ownerId;
   final String? price;
   final String? description;
-  double quantity;
+  int? quantity;
 
   ProductModel({
     this.id,
@@ -24,18 +24,20 @@ class ProductModel {
       'category': category,
       'ownerId': ownerId,
       'price': price,
-      'description': description
+      'description': description,
+      'quantity': quantity,
     };
   }
 
   factory ProductModel.fromJson(dynamic json) {
     return ProductModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      category: json['category'] as String,
-      ownerId: json['ownerId'] as String,
-      price: json['price'] as String,
-      description: json['description'] as String,
+      id: json['id'],
+      name: json['name'],
+      category: json['category'],
+      ownerId: json['ownerId'],
+      price: json['price'],
+      description: json['description'],
+      quantity: json['quantity'],
     );
   }
 }

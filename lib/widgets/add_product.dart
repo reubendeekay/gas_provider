@@ -4,9 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/helpers/button_loader.dart';
 import 'package:gas_provider/helpers/my_shimmer.dart';
 import 'package:gas_provider/models/product_model.dart';
+import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:gas_provider/widgets/product_widget.dart';
+import 'package:provider/provider.dart';
 
 class AddProducts extends StatefulWidget {
   final Function(List<ProductModel> products)? onCompleted;
@@ -24,13 +27,16 @@ class _AddProductsState extends State<AddProducts> {
   List<ProductModel> products = [];
   int productsLength = 1;
   String? name;
+  int quantity = 1;
   String? price, category, description;
   final priceController = TextEditingController();
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final categoryController = TextEditingController();
+  final quantityController = TextEditingController();
 
-  final uid = FirebaseAuth.instance.currentUser!.uid;
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -247,6 +253,44 @@ class _AddProductsState extends State<AddProducts> {
                                   })
                                 }),
                       ),
+                      Container(
+                        width: size.width,
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.grey[200]),
+                        child: TextFormField(
+                            controller: quantityController,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return 'Please enter the quantity of the product';
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                labelText: 'Quantity',
+                                labelStyle: const TextStyle(fontSize: 14),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(2),
+                                    borderSide: const BorderSide(
+                                        color: kPrimaryColor, width: 1)),
+                                border: InputBorder.none),
+                            onEditingComplete: () {
+                              products.add(ProductModel(
+                                name: name,
+                                quantity: quantity,
+                              ));
+                            },
+                            onChanged: (text) => {
+                                  setState(() {
+                                    quantity = int.parse(text);
+                                  })
+                                }),
+                      ),
                     ])),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -255,11 +299,12 @@ class _AddProductsState extends State<AddProducts> {
                 onPressed: () {
                   setState(() {
                     products.add(ProductModel(
-                        price: price,
-                        name: name,
-                        category: category,
-                        description: description,
-                        ownerId: uid));
+                      price: price,
+                      name: name,
+                      category: category,
+                      description: description,
+                      quantity: quantity,
+                    ));
                     price = null;
                     name = null;
                     category = null;
@@ -268,11 +313,13 @@ class _AddProductsState extends State<AddProducts> {
                     nameController.clear();
                     categoryController.clear();
                     descriptionController.clear();
+
+                    quantityController.clear();
                   });
                 },
                 color: kIconColor,
                 child: const Text(
-                  'Add',
+                  'Save',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -283,15 +330,29 @@ class _AddProductsState extends State<AddProducts> {
               child: RaisedButton(
                 onPressed: products.isEmpty
                     ? null
-                    : () {
-                        widget.onCompleted!(products);
+                    : () async {
+                        if (widget.onCompleted == null) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await Provider.of<GasProviders>(context,
+                                  listen: false)
+                              .addProducts(products);
+                          setState(() {
+                            isLoading = false;
+                          });
+                        } else {
+                          widget.onCompleted!(products);
+                        }
                         Navigator.pop(context);
                       },
                 color: kPrimaryColor,
-                child: const Text(
-                  'Complete',
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: isLoading
+                    ? const MyLoader()
+                    : const Text(
+                        'Complete',
+                        style: TextStyle(color: Colors.white),
+                      ),
               ),
             )
           ],

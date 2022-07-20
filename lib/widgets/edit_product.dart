@@ -6,6 +6,7 @@ import 'package:gas_provider/helpers/my_shimmer.dart';
 import 'package:gas_provider/models/product_model.dart';
 import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:gas_provider/widgets/product_widget.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -23,10 +24,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
   String? name;
   String? price, category, description;
+  int? quantity;
   final priceController = TextEditingController();
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final categoryController = TextEditingController();
+  final quantityController = TextEditingController();
 
   final uid = FirebaseAuth.instance.currentUser!.uid;
   @override
@@ -44,7 +47,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           : description,
       id: widget.product.id,
       ownerId: widget.product.ownerId,
-      quantity: widget.product.quantity,
+      quantity: quantity ?? widget.product.quantity,
     );
 
     return Scaffold(
@@ -54,6 +57,39 @@ class _EditProductScreenState extends State<EditProductScreen> {
         ),
         elevation: 0,
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Are you sure?'),
+                    content: const Text('This action cannot be undone.'),
+                    actions: [
+                      FlatButton(
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      FlatButton(
+                        child: const Text('Delete'),
+                        textColor: Colors.red,
+                        onPressed: () async {
+                          await Provider.of<GasProviders>(context,
+                                  listen: false)
+                              .deleteProduct(product.id!);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: Icon(
+                Iconsax.trash,
+                color: Colors.red,
+              )),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -78,7 +114,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
               child: const Text(
-                'Fill in all the details',
+                'Fill in what to edit, ',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
@@ -215,6 +251,45 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             onChanged: (text) => {
                                   setState(() {
                                     price = text;
+                                  })
+                                }),
+                      ),
+                      Container(
+                        width: size.width,
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.grey[200]),
+                        child: TextFormField(
+                            controller: quantityController,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return 'Please enter the quantity of the product';
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                labelText:
+                                    'Quantity (${widget.product.quantity} remaining)',
+                                labelStyle: const TextStyle(fontSize: 14),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(2),
+                                    borderSide: const BorderSide(
+                                        color: kPrimaryColor, width: 1)),
+                                border: InputBorder.none),
+                            onEditingComplete: () {
+                              // products.add(ProductModel(
+                              //   name: name,
+                              //   price: price,
+                              // ));
+                            },
+                            onChanged: (text) => {
+                                  setState(() {
+                                    quantity = int.parse(text);
                                   })
                                 }),
                       ),

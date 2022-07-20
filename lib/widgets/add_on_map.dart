@@ -16,9 +16,9 @@ class _AddOnMapState extends State<AddOnMap> {
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-    String value = await DefaultAssetBundle.of(context)
-        .loadString('assets/map_style.json');
-    mapController!.setMapStyle(value);
+    // String value = await DefaultAssetBundle.of(context)
+    //     .loadString('assets/map_style.json');
+    // mapController!.setMapStyle(value);
   }
 
   @override

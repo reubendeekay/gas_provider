@@ -114,15 +114,14 @@ class _CustomerRequestWidgetState extends State<CustomerRequestWidget> {
             const SizedBox(
               height: 15,
             ),
-            Text('Delivery Details',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            SizedBox(height: 5),
+            const Text('Delivery Details',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            const SizedBox(height: 5),
             Text(location == null ? 'Address' : location!.address!),
-            SizedBox(height: 3),
+            const SizedBox(height: 3),
             Text(
               location == null ? 'Address' : location!.state!,
-              style: TextStyle(color: Colors.grey, fontSize: 13),
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
             ),
             const SizedBox(
               height: 15,

@@ -5,7 +5,7 @@ class ProviderModel {
   String? id;
   final String? name;
   final String? address;
-  final String? ownerId;
+  String? ownerId;
   List<dynamic>? images;
   String? logo;
   final int? ratings;

@@ -3,10 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
 import 'package:gas_provider/firebase_options.dart';
+import 'package:gas_provider/providers/admin_provider.dart';
 import 'package:gas_provider/providers/auth_provider.dart';
 import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:gas_provider/providers/location_provider.dart';
 import 'package:gas_provider/providers/request_provider.dart';
+import 'package:gas_provider/screens/admin/admin_dashboard.dart';
 import 'package:gas_provider/screens/auth/login.dart';
 import 'package:gas_provider/widgets/loading_screen.dart';
 import 'package:get/route_manager.dart';
@@ -15,8 +17,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      name: "gas-app-26a73", options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ChangeNotifierProvider(create: (ctx) => GasProviders()),
         ChangeNotifierProvider(create: (ctx) => RequestProvider()),
+        ChangeNotifierProvider(create: (ctx) => AdminProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

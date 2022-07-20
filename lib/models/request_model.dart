@@ -11,6 +11,7 @@ class RequestModel {
   String? paymentMethod;
   final String status;
   final Timestamp? createdAt;
+  final double deliveryFee;
 
   final List<ProductModel>? products;
   double? total;
@@ -25,6 +26,7 @@ class RequestModel {
       this.id,
       this.total,
       this.createdAt,
+      this.deliveryFee = 0,
       this.status = 'pending'});
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class RequestModel {
       'total': total,
       'status': status,
       'createdAt': createdAt,
+      'deliveryFee': deliveryFee,
     };
   }
 
@@ -59,6 +62,7 @@ class RequestModel {
       total: json['total'] as double,
       status: json['status'] as String,
       createdAt: json['createdAt'] as Timestamp,
+      deliveryFee: double.parse(json['deliveryFee'].toString()),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -127,8 +126,6 @@ It is the same as the request id since the chat is available only during the req
     users.sort((a, b) => b.time!.compareTo(a.time!));
 
     return users;
-
-    notifyListeners();
   }
 
   Future<List<ChatTileModel>> searchUser(String searchTerm) async {
@@ -149,7 +146,6 @@ It is the same as the request id since the chat is available only during the req
         .forEach((e) {
       users.add(UserModel.fromJson(e));
     });
-    print(users.length);
 
     notifyListeners();
     return users.map((e) => ChatTileModel(user: e, chatRoomId: '')).toList();

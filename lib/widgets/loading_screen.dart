@@ -6,6 +6,8 @@ import 'package:gas_provider/my_nav.dart';
 import 'package:gas_provider/providers/auth_provider.dart';
 import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:gas_provider/providers/location_provider.dart';
+import 'package:gas_provider/screens/admin/admin_dashboard.dart';
+import 'package:gas_provider/screens/auth/login.dart';
 import 'package:gas_provider/screens/home/home_page.dart';
 
 import 'package:get/route_manager.dart';
@@ -23,14 +25,25 @@ class InitialLoadingScreen extends StatefulWidget {
 class InitialLoadingScreenState extends State<InitialLoadingScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () async {
       await Provider.of<AuthProvider>(context, listen: false).getCurrentUser();
       await Provider.of<LocationProvider>(context, listen: false)
           .getCurrentLocation();
 
-      Get.offAll(() => const MyNav());
+      final user = Provider.of<AuthProvider>(context, listen: false).user!;
+
+      if (user.isProvider!) {
+        Get.offAll(() => const MyNav());
+      } else if (user.isAdmin!) {
+        Get.offAll(() => const AdminDashboard());
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('You are not a provider'),
+        ));
+        await FirebaseAuth.instance.signOut();
+        Get.offAll(() => const LoginScreen());
+      }
     });
   }
 

@@ -81,6 +81,26 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
           ),
           const Divider(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Text(
+              'Customer Details',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          DeliveryDriverWidget(
+            request: widget.request,
+            isCustomer: true,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15,
+            ),
+            child: Text(
+              'Driver Details',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           if (widget.request.status != 'pending' ||
               widget.request.status == 'accepted')
             DeliveryDriverWidget(request: widget.request),

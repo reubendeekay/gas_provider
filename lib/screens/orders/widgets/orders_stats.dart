@@ -16,6 +16,7 @@ class OrdersStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(progress);
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(15),
@@ -36,7 +37,7 @@ class OrdersStats extends StatelessWidget {
           ),
           const Text(
             'Progress',
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(
             height: 8,

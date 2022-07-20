@@ -109,7 +109,6 @@ class EmojiFeedbackState extends State<EmojiFeedback>
         src: reactions[i].src,
         onPressed: () {
           moveTo(i);
-          print(reactions[i].activeSrc!);
         },
       ));
       activeEmojis.add(

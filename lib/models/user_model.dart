@@ -7,6 +7,7 @@ class UserModel {
   final String? password;
   final String? phone;
   final bool? isProvider;
+  final bool? isAdmin;
   final bool? isDriver;
   String? profilePic;
   String? transitId;
@@ -20,6 +21,7 @@ class UserModel {
       this.phone,
       this.isProvider,
       this.transitId,
+      this.isAdmin,
       this.plateNumber,
       this.userId,
       this.locations,
@@ -38,6 +40,7 @@ class UserModel {
       'profilePic': profilePic,
       'transitId': transitId,
       'plateNumber': plateNumber,
+      'isAdmin': isAdmin,
     };
   }
 
@@ -53,6 +56,7 @@ class UserModel {
       transitId: json['transitId'],
       plateNumber: json['plateNumber'],
       isDriver: json['isDriver'],
+      isAdmin: json['isAdmin'],
     );
   }
 }

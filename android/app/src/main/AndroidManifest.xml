@@ -1,9 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gas_provider">
    <application
-        android:label="gas_provider"
+        android:label="Provider App"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDIL1xyrMndlk2dSSSSikdobR8qDjz0jjQ"/>
+         <!-- <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.fileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true"
+                tools:replace="android:authorities">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/filepaths"
+                    tools:replace="android:resource" />
+        </provider> -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

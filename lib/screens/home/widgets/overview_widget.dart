@@ -3,9 +3,14 @@ import 'package:gas_provider/constants.dart';
 import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:provider/provider.dart';
 
-class OverviewWidget extends StatelessWidget {
+class OverviewWidget extends StatefulWidget {
   const OverviewWidget({Key? key}) : super(key: key);
 
+  @override
+  State<OverviewWidget> createState() => _OverviewWidgetState();
+}
+
+class _OverviewWidgetState extends State<OverviewWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
@@ -60,26 +65,37 @@ class OverviewWidget extends StatelessWidget {
                         ),
                         itemBuilder: (context) => [
                           const PopupMenuItem(
+                            value: null,
                             child: Text(
                               'All time',
                             ),
                           ),
                           const PopupMenuItem(
+                            value: 1,
                             child: Text(
                               'Yesterday',
                             ),
                           ),
                           const PopupMenuItem(
+                            value: 7,
                             child: Text(
                               '7 days ago',
                             ),
                           ),
                           const PopupMenuItem(
+                            value: 30,
                             child: Text(
                               '30 days ago',
                             ),
                           ),
                         ],
+                        onSelected: (dynamic value) {
+                          Provider.of<GasProviders>(context, listen: false)
+                              .overviewTime = value;
+                          setState(() {});
+
+                          print(value);
+                        },
                       ),
                     )
                   ],
@@ -175,10 +191,7 @@ class OverviewWidget extends StatelessWidget {
                               height: 5,
                             ),
                             Text(
-                              snapshot.connectionState ==
-                                      ConnectionState.waiting
-                                  ? '120'
-                                  : snapshot.data!['income'].toString(),
+                              'KES ${snapshot.connectionState == ConnectionState.waiting ? '120' : snapshot.data!['income'].toString()}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,

@@ -18,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
+  bool isAdmin = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           children: [
             SizedBox(
-              height: size.height * .25,
+              height: size.height * .2,
             ),
             const Center(
                 child: Text(
@@ -67,6 +68,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 });
               },
             ),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text('Login as Admin',
+                    style: TextStyle(
+                      fontSize: 12,
+                    )),
+                Switch(
+                    value: isAdmin,
+                    onChanged: (val) {
+                      setState(() {
+                        isAdmin = val;
+                      });
+                    })
+              ],
+            ),
             Container(
               height: 45,
               margin: const EdgeInsets.symmetric(vertical: 15),
@@ -100,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
             SizedBox(
-              height: size.height * .1,
+              height: size.height * .05,
             ),
             Center(
               child: GestureDetector(

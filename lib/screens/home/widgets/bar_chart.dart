@@ -1,6 +1,8 @@
 import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/providers/gas_providers.dart';
+import 'package:provider/provider.dart';
 
 class BarChart extends StatelessWidget {
   const BarChart({Key? key}) : super(key: key);
@@ -22,32 +24,41 @@ class BarChart extends StatelessWidget {
             height: 10,
           ),
           Expanded(
-              child: DChartBar(
-            data: const [
-              {
-                'id': 'Bar',
-                'data': [
-                  {'domain': 'Mon', 'measure': 3},
-                  {'domain': 'Tue', 'measure': 4},
-                  {'domain': 'Wed', 'measure': 6},
-                  {'domain': 'Thur', 'measure': 3},
-                  {'domain': 'Fri', 'measure': 6},
-                  {'domain': 'Sat', 'measure': 5},
-                  {'domain': 'Sun', 'measure': 4},
-                ],
-              },
-            ],
-            domainLabelPaddingToAxisLine: 15,
-            minimumPaddingBetweenLabel: 15,
-            axisLineTick: 2,
-            axisLinePointTick: 2,
-            axisLinePointWidth: 10,
-            axisLineColor: Colors.grey[300],
-            measureLabelPaddingToAxisLine: 16,
-            animationDuration: const Duration(seconds: 1),
-            barColor: (barData, index, id) => kIconColor,
-            showBarValue: true,
-          )),
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: Provider.of<GasProviders>(context, listen: false)
+                      .getWeekIncome(),
+                  builder: (context, snapshot) {
+                    return DChartBar(
+                      data: snapshot.connectionState == ConnectionState.waiting
+                          ? const [
+                              {
+                                'id': 'Bar',
+                                'data': [
+                                  {'domain': 'Mon', 'measure': 3},
+                                  {'domain': 'Tue', 'measure': 4},
+                                  {'domain': 'Wed', 'measure': 6},
+                                  {'domain': 'Thur', 'measure': 3},
+                                  {'domain': 'Fri', 'measure': 6},
+                                  {'domain': 'Sat', 'measure': 5},
+                                  {'domain': 'Sun', 'measure': 4},
+                                ],
+                              },
+                            ]
+                          : [
+                              {'id': 'Bar', 'data': snapshot.data!}
+                            ],
+                      domainLabelPaddingToAxisLine: 15,
+                      minimumPaddingBetweenLabel: 15,
+                      axisLineTick: 2,
+                      axisLinePointTick: 2,
+                      axisLinePointWidth: 10,
+                      axisLineColor: Colors.grey[300],
+                      measureLabelPaddingToAxisLine: 16,
+                      animationDuration: const Duration(seconds: 1),
+                      barColor: (barData, index, id) => kIconColor,
+                      showBarValue: true,
+                    );
+                  })),
         ],
       ),
     );
