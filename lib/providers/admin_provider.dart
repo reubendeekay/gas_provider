@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:http/http.dart' as http;
 
 class AdminProvider with ChangeNotifier {
   Future<Map<String, dynamic>> getAllUserData() async {
@@ -42,9 +44,22 @@ class AdminProvider with ChangeNotifier {
   }
 
   Future<void> blockUser(String uid) async {
-    await FirebaseFirestore.instance.collection('users').doc(uid).update({
-      'isBlocked': true,
-    });
+    try {
+      await http.post(
+          Uri.parse(
+              'https://us-central1-gas-app-26a73.cloudfunctions.net/disableUser'),
+          body: {'uid': uid});
+    } catch (e) {
+      Get.snackbar('Failed to Block User', e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          borderRadius: 10,
+          margin: const EdgeInsets.all(10),
+          borderColor: Colors.red,
+          borderWidth: 2);
+    }
+
     notifyListeners();
   }
 }

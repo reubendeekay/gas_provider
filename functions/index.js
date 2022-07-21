@@ -60,5 +60,67 @@ exports.sendNotification = functions.firestore
       priority: "high",
       timeToLive: 60 * 60 * 24,
     };
-    return admin.messaging().sendToTopic("chat", payload, options);
+
+    //get push token from the user
+    const user = await admin
+      .firestore()
+      .collection("users")
+      .doc(notData.userId)
+      .get();
+    const token = user.data().pushToken;
+    if (token) {
+      return admin.messaging().sendToDevice(token, payload, options);
+    }
   });
+
+//Send a message to the device a product is less than 10 units in product collection's document
+exports.sendNotificationOnProduct = functions.firestore
+  .document("providers/{providerId}/products/{productId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+
+    if (after.quantity < 20) {
+      const payload = {
+        notification: {
+          title: "Product notification",
+          body: after.name + " is depleting. Please procure more.",
+          icon: before.imageUrl,
+        },
+      };
+      const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24,
+      };
+      //get push token from the user
+      const user = await admin
+        .firestore()
+        .collection("users")
+        .doc(after.ownerId)
+        .get();
+      const token = user.data().pushToken;
+      if (token) {
+        return admin.messaging().sendToDevice(token, payload, options);
+      }
+    }
+  });
+
+//Disable a user account on request
+exports.disableUser = functions.https.onRequest(async (req, res) => {
+  // get the user ID from the request
+  const uid = req.body.uid;
+  try {
+    await admin
+      .auth()
+      .updateUser(uid, {
+        disabled: true,
+      })
+      .catch(function (error) {
+        console.log("Error disabling user", uid, error);
+      });
+  } catch (error) {
+    console.log("Error disabling user", uid, error);
+  }
+
+  res.send("User disabled");
+});

@@ -48,6 +48,7 @@ dependencies:
   google_fonts: ^3.0.1
   google_map_polyline_new: ^0.3.0+2
   google_maps_flutter: ^2.1.7
+  http: ^0.13.4
   iconsax: ^0.0.8
   intl: ^0.17.0
   location: ^4.4.0

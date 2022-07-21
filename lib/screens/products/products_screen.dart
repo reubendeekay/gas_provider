@@ -48,21 +48,22 @@ class ProductsScreen extends StatelessWidget {
                                   children: [
                                     ProductWidget(
                                         product: ProductModel.fromJson(doc)),
-                                    Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Container(
-                                        color: Colors.red,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 3),
-                                        child: Text(
-                                          '${doc['quantity']} remaining',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12),
+                                    if (doc['quantity'] < 20)
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Container(
+                                          color: Colors.red,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 6, vertical: 3),
+                                          child: Text(
+                                            '${doc['quantity']} remaining',
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12),
+                                          ),
                                         ),
-                                      ),
-                                    )
+                                      )
                                   ],
                                 ),
                               ))
