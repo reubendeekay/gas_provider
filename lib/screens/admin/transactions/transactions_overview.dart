@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/helpers/format_amount.dart';
 import 'package:gas_provider/models/request_model.dart';
 import 'package:gas_provider/providers/admin_provider.dart';
 import 'package:gas_provider/providers/revenue_provider.dart';
@@ -27,7 +28,7 @@ class _TransactionsOverviewState extends State<TransactionsOverview> {
         actions: [
           InkWell(
             onTap: () {
-              Get.to(() => SearchScreen());
+              Get.to(() => const SearchScreen());
             },
             child: Container(
               padding: const EdgeInsets.all(10),
@@ -62,7 +63,7 @@ class _TransactionsOverviewState extends State<TransactionsOverview> {
             final providersT = snapshot.data!['totalProvidersRevenue'];
             final driversT = snapshot.data!['totalDriversRevenue'];
             final todaysRevenue = snapshot.data!['todaysRevenue'];
-            final assetPerformance = snapshot.data!['assetPerformance'];
+            final assetPerformance = snapshot.data!['assetPerfomance'];
             final top2Requests = snapshot.data!['top2Requests'];
 
             return ListView(
@@ -100,7 +101,7 @@ class _TransactionsOverviewState extends State<TransactionsOverview> {
                     UserPerformanceWidget(
                       title: 'Drivers',
                       amount: driversT.toStringAsFixed(2),
-                      percentage: driversT / (providersT + driversT),
+                      percentage: driversT / (providersT),
                     ),
                   ],
                 ),
@@ -196,10 +197,13 @@ class _TransactionsOverviewState extends State<TransactionsOverview> {
                             ],
                           ),
                           if (snapshot.connectionState == ConnectionState.done)
-                            ...List.generate(
-                              requests.length,
-                              (index) => myListTile(requests[index]),
-                            ),
+                            ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: ((context, index) =>
+                                    myListTile(requests[index])),
+                                separatorBuilder: (ctx, i) => const Divider(),
+                                itemCount: requests.length)
                         ],
                       );
                     }),
@@ -246,7 +250,7 @@ class UserPerformanceWidget extends StatelessWidget {
               height: 5,
             ),
             Text(
-              'KES $amount',
+              formatAmount(amount),
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.bold),
             ),
@@ -280,7 +284,7 @@ class UserPerformanceWidget extends StatelessWidget {
               height: 5,
             ),
             Text(
-              '${percentage * 100}% of total',
+              '${(percentage * 100).toStringAsFixed(2)}% of total',
               style: const TextStyle(color: kIconColor),
             ),
           ],
@@ -314,12 +318,13 @@ class RevenueCardWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
                   height: 15,
                 ),
                 Text(
-                  'KES $amount',
+                  formatAmount(amount),
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -387,11 +392,11 @@ class RevenueCardWidget extends StatelessWidget {
         style: const TextStyle(color: Colors.white),
       ),
       subtitle: Text(
-        requestModel.user!.phone!,
+        requestModel.user!.phone!.replaceRange(3, 7, '** **** *'),
         style: const TextStyle(color: Colors.grey),
       ),
       trailing: Text(
-        'KES ${requestModel.total}',
+        formatAmount(requestModel.total!.toStringAsFixed(2)),
         style: const TextStyle(color: Colors.white),
       ),
     );
@@ -463,10 +468,10 @@ ListTile myListTile(RequestModel requestModel) {
       requestModel.user!.fullName!,
     ),
     subtitle: Text(
-      requestModel.user!.phone!,
+      requestModel.user!.phone!.replaceRange(3, 7, '** **** *'),
     ),
     trailing: Text(
-      'KES ${requestModel.total}',
+      formatAmount(requestModel.total!.toStringAsFixed(2)),
       style: const TextStyle(),
     ),
   );

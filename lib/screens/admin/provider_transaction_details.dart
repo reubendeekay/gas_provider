@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/helpers/format_amount.dart';
 import 'package:gas_provider/models/provider_model.dart';
 import 'package:gas_provider/models/request_model.dart';
 import 'package:gas_provider/providers/revenue_provider.dart';
@@ -17,7 +18,14 @@ class ProviderTransactionDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('${provider.name} Transactions'),
+          elevation: 0.5,
+          backgroundColor: Colors.grey[50],
+          leading: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(provider.logo!)),
+          ),
+          title: Text('${provider.name}\'s Transactions'),
           automaticallyImplyLeading: false,
           actions: [
             InkWell(
@@ -61,10 +69,12 @@ class ProviderTransactionDetails extends StatelessWidget {
             }
 
             final List<DocumentSnapshot> docs = snapshot.data!.docs;
-            return ListView(
+            return ListView.separated(
               padding: EdgeInsets.zero,
-              children: List.generate(docs.length,
-                  (index) => listTile(RequestModel.fromJson(docs[index]))),
+              itemBuilder: (ctx, index) =>
+                  listTile(RequestModel.fromJson(docs[index])),
+              itemCount: docs.length,
+              separatorBuilder: (ctx, index) => const Divider(),
             );
           }),
     );
@@ -83,7 +93,7 @@ class ProviderTransactionDetails extends StatelessWidget {
         requestModel.user!.fullName!,
       ),
       trailing: Text(
-        'KES ${requestModel.total}',
+        formatAmount(requestModel.total!.toStringAsFixed(2)),
         style: const TextStyle(),
       ),
     );

@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
               ).bodyText2,
               titleTextStyle: TextTheme(
                 headline6: GoogleFonts.ibmPlexSans(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
                 ),

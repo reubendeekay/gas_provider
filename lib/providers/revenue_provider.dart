@@ -105,8 +105,10 @@ class RevenueProvider with ChangeNotifier {
             DateTime.now().difference(element.createdAt!.toDate()).inDays < 2)
         .toList();
     double yestRevenue = yestRequests.fold(0, (sum, element) {
-      return sum + double.parse(element.total.toString());
-    });
+          return double.parse(sum.toString()) +
+              double.parse(element.total.toString());
+        }) -
+        todaysRevenue;
 
     final totalProvidersRevenue = requestData
         .map((k) => k.products!.first.price!)
@@ -117,11 +119,16 @@ class RevenueProvider with ChangeNotifier {
     //Get 2 requests with most total value
     requestData.sort((a, b) => b.total!.compareTo(a.total!));
     final top2Requests = requestData.take(2).toList();
+    print('YESTERDAYS REVENUE: $yestRevenue');
+    print('TODAYS REVENUE: $todaysRevenue');
+    final assetPerformance =
+        (todaysRevenue / (yestRevenue > 0 ? yestRevenue : 1)) * 100;
+    print('ASSET PERFORMANCE: $assetPerformance');
     return {
       'totalProvidersRevenue': double.parse(totalProvidersRevenue.toString()),
       'totalDriversRevenue': totalDriversRevenue,
       'todaysRevenue': todaysRevenue,
-      'assetPerfomance': todaysRevenue / yestRevenue * 100,
+      'assetPerfomance': assetPerformance > 100 ? 100 : assetPerformance,
       'top2Requests': top2Requests,
     };
   }
