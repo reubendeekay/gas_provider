@@ -80,6 +80,23 @@ void actionSheet(BuildContext context, UserModel user) {
                           letterSpacing: 0.3, fontWeight: FontWeight.w500)),
                     ),
                   ),
+                ListTile(
+                  dense: true,
+                  leading: const Icon(
+                    Icons.close,
+                    size: 20,
+                  ),
+                  onTap: () async {
+                    await Provider.of<AdminProvider>(context, listen: false)
+                        .makeAdmin(user.userId!, user.isAdmin!);
+                    Navigator.of(context).pop();
+                  },
+                  title: Text(
+                    user.isAdmin! ? "Remove as Admin" : "Make an Admin",
+                    style: (TextStyle(
+                        letterSpacing: 0.3, fontWeight: FontWeight.w500)),
+                  ),
+                ),
                 const Divider(
                   color: Colors.grey,
                 ),
@@ -92,7 +109,6 @@ void actionSheet(BuildContext context, UserModel user) {
                   onTap: () async {
                     await Provider.of<AdminProvider>(context, listen: false)
                         .blockUser(user.userId!);
-                    Navigator.of(context).pop();
                   },
                   title: const Text(
                     "Block User",

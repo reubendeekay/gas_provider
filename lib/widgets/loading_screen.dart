@@ -33,13 +33,13 @@ class InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
       final user = Provider.of<AuthProvider>(context, listen: false).user!;
 
-      if (user.isProvider!) {
-        Get.offAll(() => const MyNav());
-      } else if (user.isAdmin!) {
+      if (user.isAdmin!) {
         Get.offAll(() => const AdminDashboard());
+      } else if (user.isProvider!) {
+        Get.offAll(() => const MyNav());
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('You are not a provider'),
+          content: Text('You are not a provider or an admin'),
         ));
         await FirebaseAuth.instance.signOut();
         Get.offAll(() => const LoginScreen());

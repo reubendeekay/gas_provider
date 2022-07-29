@@ -334,6 +334,7 @@ class _RegisterProviderState extends State<RegisterProvider> {
                           fullName: name,
                           locations: [],
                           isDriver: false,
+                          isAdmin: false,
                         );
 
                         setState(() {

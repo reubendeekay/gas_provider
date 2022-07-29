@@ -28,9 +28,11 @@ class AdminOverview extends StatelessWidget {
                     TotalUsersCard(),
                     TotalUsersCard(
                       color: kIconColor,
+                      percentage: '40%',
                     ),
                     TotalUsersCard(
                       color: Colors.grey,
+                      percentage: '10%',
                     ),
                   ]);
                 }

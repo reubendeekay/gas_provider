@@ -34,13 +34,13 @@ class UserModel {
       'email': email,
       'password': password,
       'phone': phone,
-      'isProvider': false,
+      'isProvider': true,
       'isDriver': isDriver,
       'userId': userId,
       'profilePic': profilePic,
       'transitId': transitId,
       'plateNumber': plateNumber,
-      'isAdmin': isAdmin,
+      'isAdmin': false,
     };
   }
 

@@ -2,12 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/providers/admin_provider.dart';
 import 'package:gas_provider/providers/auth_provider.dart';
 import 'package:gas_provider/screens/admin/admin_overview.dart';
 import 'package:gas_provider/screens/admin/all_drivers.dart';
 import 'package:gas_provider/screens/admin/all_providers.dart';
 import 'package:gas_provider/screens/admin/all_users.dart';
+import 'package:gas_provider/screens/admin/transactions/transactions_overview.dart';
 import 'package:gas_provider/screens/auth/login.dart';
+import 'package:gas_provider/screens/orders/invoice_screen.dart';
 import 'package:get/route_manager.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +50,26 @@ class AdminDashboard extends StatelessWidget {
             ],
           ),
           actions: [
+            InkWell(
+              onTap: () {
+                Get.to(() => const TransactionsOverview());
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: kIconColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.graph,
+                  size: 18,
+                  color: kIconColor,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
             InkWell(
               onTap: () async {
                 await FirebaseAuth.instance.signOut();

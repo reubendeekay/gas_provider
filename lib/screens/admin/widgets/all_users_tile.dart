@@ -35,7 +35,18 @@ class AllUsersTile extends StatelessWidget {
             backgroundColor: Colors.grey,
             backgroundImage: CachedNetworkImageProvider(user.profilePic!),
           ),
-          title: Text(user.fullName!),
+          title: Row(
+            children: [
+              Text(user.fullName!),
+              if (user.isAdmin!) const SizedBox(width: 2.5),
+              if (user.isAdmin!)
+                const Icon(
+                  Iconsax.verify,
+                  color: Colors.green,
+                  size: 14,
+                ),
+            ],
+          ),
           subtitle: Text(user.email!),
           trailing:
               // Row(

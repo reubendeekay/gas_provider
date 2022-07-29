@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gas_provider/constants.dart';
+import 'package:gas_provider/models/invoice_models.dart';
+import 'package:gas_provider/models/request_model.dart';
 import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,6 +41,14 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> makeAdmin(String uid, bool isAdmin) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'isAdmin': !isAdmin,
+    });
+
+    notifyListeners();
+  }
+
   Future<void> deleteUserAccount(String uid) async {
     await FirebaseFirestore.instance.collection('users').doc(uid).delete();
     notifyListeners();
@@ -49,6 +60,18 @@ class AdminProvider with ChangeNotifier {
           Uri.parse(
               'https://us-central1-gas-app-26a73.cloudfunctions.net/disableUser'),
           body: {'uid': uid});
+      Get.snackbar('User blocked', 'User has been blocked',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: kIconColor,
+          borderRadius: 10,
+          margin: const EdgeInsets.all(10),
+          borderColor: kIconColor,
+          borderWidth: 2,
+          colorText: Colors.white,
+          icon: const Icon(
+            Icons.block,
+            color: Colors.white,
+          ));
     } catch (e) {
       Get.snackbar('Failed to Block User', e.toString(),
           snackPosition: SnackPosition.BOTTOM,
@@ -61,5 +84,39 @@ class AdminProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future<Invoice> getAllTransactions(BuildContext context) async {
+    final results = await FirebaseFirestore.instance
+        .collection('requests')
+        .doc('common')
+        .collection('drivers')
+        .get();
+
+    List<RequestModel> requests =
+        results.docs.map((doc) => RequestModel.fromJson(doc)).toList();
+
+    final invoice = Invoice(
+        info: InvoiceInfo(
+          date: DateTime.now(),
+          dueDate: DateTime.now(),
+          description: 'All transacations to date',
+          number: 'All',
+        ),
+        supplier: const Supplier(
+            name: 'System admin',
+            address: 'Confidential',
+            paymentInfo: 'Mpesa'),
+        customer: const Customer(name: 'From all Customers'),
+        items: requests
+            .map((k) => InvoiceItem(
+                description: k.products!.first.name!,
+                date: k.createdAt!.toDate(),
+                quantity: 1,
+                name: k.user!.fullName!,
+                unitPrice: double.parse(k.products!.first.price!)))
+            .toList());
+    notifyListeners();
+    return invoice;
   }
 }

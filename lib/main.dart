@@ -8,6 +8,7 @@ import 'package:gas_provider/providers/auth_provider.dart';
 import 'package:gas_provider/providers/gas_providers.dart';
 import 'package:gas_provider/providers/location_provider.dart';
 import 'package:gas_provider/providers/request_provider.dart';
+import 'package:gas_provider/providers/revenue_provider.dart';
 import 'package:gas_provider/screens/admin/admin_dashboard.dart';
 import 'package:gas_provider/screens/auth/login.dart';
 import 'package:gas_provider/widgets/loading_screen.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => GasProviders()),
         ChangeNotifierProvider(create: (ctx) => RequestProvider()),
         ChangeNotifierProvider(create: (ctx) => AdminProvider()),
+        ChangeNotifierProvider(create: (ctx) => RevenueProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -69,7 +71,7 @@ class MyApp extends StatelessWidget {
               ).bodyText2,
               titleTextStyle: TextTheme(
                 headline6: GoogleFonts.ibmPlexSans(
-                  fontSize: 20,
+                  fontSize: 18,
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
                 ),

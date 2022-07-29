@@ -38,6 +38,8 @@ exports.deleteUserOnDelete = functions.firestore
         .catch(function (error) {
           console.log("Error deleting user", uid, error);
         });
+      //Delete the user from the users collection
+      await admin.firestore().collection("users").doc(uid).delete();
     } catch (error) {
       console.log("Error deleting user", uid, error);
     }
